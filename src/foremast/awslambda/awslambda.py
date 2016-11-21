@@ -57,7 +57,9 @@ class LambdaFunction(object):
         self.memory = self.properties[env]['app']['lambda_memory']
         self.timeout = self.properties[env]['app']['lambda_timeout']
 
-        self.role_arn = get_role_arn(generated.iam()['role'], self.env, self.region)
+        self.role_arn = get_role_arn(
+            self.properties[env]['app'].get('instance_profile', generated.iam()['role']),
+            self.env, self.region)
 
         self.session = boto3.Session(profile_name=self.env, region_name=self.region)
         self.lambda_client = self.session.client('lambda')
